@@ -1,15 +1,14 @@
-import { createAppContainer } from '@react-navigation/native';
+import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
+
 import Home from './home.js';
-
-const AppNavigator = createStackNavigator({
-  Home: {
-    screen: Home,
-    navigationOptions: {
-      title: 'Crypto App',
-    },
-  },
-  // ... (adicionar outras rotas aqui)
-});
-
-export default createAppContainer(AppNavigator);
+const Stack = createStackNavigator();
+export default function Routes() {
+  return (
+    <NavigationContainer>
+      <Stack.Navigator screenOptions={{headerShown: false}}>
+        <Stack.Screen name='Home' component={Home} />
+      </Stack.Navigator>
+    </NavigationContainer>
+  )
+}
