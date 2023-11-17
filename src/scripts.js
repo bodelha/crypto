@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const POLYGON_API_KEY = '5G75jgQPqz7tV_UjWhC2Fu5iQyTVW2hS';
+const POLYGON_API_KEY = '';
 
 const getHistoricalData = async (symbol) => {
     console.log(`${POLYGON_API_KEY} vberqoge`)
