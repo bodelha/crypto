@@ -6,7 +6,7 @@ const Home = () => {
     { name: 'Bitcoin', symbol: 'BTC', icon: require('./images/btc.png') },
     { name: 'Ethereum', symbol: 'ETH', icon: require('./images/eth.png') },
     { name: 'Cardano', symbol: 'ADA', icon: require('./images/ada.png') },
-    { name: 'Binance Coin', symbol: 'BNB', icon: require('./images/bnb.png') },
+    { name: 'Doge', symbol: 'DOGE', icon: require('./images/doge.png') },
     { name: 'Solana', symbol: 'SOL', icon: require('./images/sol.png') },
   ];
 
