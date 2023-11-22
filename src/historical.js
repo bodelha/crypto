@@ -1,34 +1,37 @@
-import getHistoricalData from './scripts';
+import React, { useEffect, useState } from 'react';
+import { View, Text } from 'react-native';
+import { LineChart } from 'react-native-gifted-charts';
+import mockedData from './sol';
+import transformData from './scripts';
 
-import React, { useState } from 'react';
-import { View, Text, Button } from 'react-native';
+const HistoricalChart = () => {
+  const [parsedData, setParsedData] = useState([]);
 
-const CryptoHistoricalDataPage = () => {
-  const [historicalData, setHistoricalData] = useState(null);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const transformedData = await transformData(mockedData, 'c');
+        setParsedData(transformedData);
+      } catch (error) {
+        console.error('Error fetching or transforming historical data:', error.message);
+      }
+    };
 
-  const handleGetHistoricalData = async () => {
-    try {
-      // Chamando a função para obter dados históricos para o BTC
-      const data = await getHistoricalData('SOL');
-      setHistoricalData(data);
-      console.log('Dados históricos para BTC:', data);
-    } catch (error) {
-      console.error('Erro ao obter dados históricos:', error.message);
-    }
-  };
+    fetchData();
+  }, []);
+
+  if (!parsedData || parsedData.length === 0) {
+    return <Text>Loading data...</Text>;
+  }
 
   return (
     <View>
-      <Text>Página de Dados Históricos de Cripto</Text>
-      <Button title="Obter Dados Históricos BTC" onPress={handleGetHistoricalData} />
-      {historicalData && (
-        <View>
-          <Text>Dados Históricos:</Text>
-          <Text>{JSON.stringify(historicalData, null, 2)}</Text>
-        </View>
-      )}
+      <Text>Cryptocurrency Historical Performance</Text>
+
+      {/* Line Chart for Closing Prices */}
+      <LineChart data={parsedData} width={400} height={200} />
     </View>
   );
 };
 
-export default CryptoHistoricalDataPage;
+export default HistoricalChart;

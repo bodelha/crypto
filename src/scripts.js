@@ -36,4 +36,18 @@ const getHistoricalData = async (symbol) => {
   }
 };
 
-export default getHistoricalData;
+
+const transformData = (data, label) => {
+  console.log(label)
+  if (!data || !data.results || !Array.isArray(data.results)) {
+    return [];
+  }
+  return data.results.map(item => ({ "value": item[label] }));
+
+};
+
+
+export default {
+  getHistoricalData,
+  transformData,
+};
