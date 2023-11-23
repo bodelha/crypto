@@ -37,14 +37,16 @@ const getHistoricalData = async (symbol) => {
 };
 
 
-const transformData = (data, label) => {
+const transformDataForLineChart = (data, label) => {
   console.log(label)
   if (!data || !data.results || !Array.isArray(data.results)) {
     return [];
   }
-  return data.results.map(item => ({ "value": item[label], "dataPointText": String(item[label]) }));
+  const result =  data.results.map(item => ({ "value": item[label], "dataPointText": String(item[label].toFixed(2)) }));
+  console.log('vaofyav', result)
+  return result
 
 };
 
 
-export default transformData;
+export default transformDataForLineChart;
