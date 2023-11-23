@@ -42,12 +42,9 @@ const transformData = (data, label) => {
   if (!data || !data.results || !Array.isArray(data.results)) {
     return [];
   }
-  return data.results.map(item => ({ "value": item[label] }));
+  return data.results.map(item => ({ "value": item[label], "dataPointText": String(item[label]) }));
 
 };
 
 
-export default {
-  getHistoricalData,
-  transformData,
-};
+export default transformData;

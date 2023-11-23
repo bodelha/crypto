@@ -25,11 +25,20 @@ const HistoricalChart = () => {
   }
 
   return (
-    <View>
-      <Text>Cryptocurrency Historical Performance</Text>
+    <View style={{ flex: 1 }}>
+      <Text style={{ textAlign: 'center', margin: 16, fontSize: 18 }}>Cryptocurrency Historical Performance</Text>
 
       {/* Line Chart for Closing Prices */}
-      <LineChart data={parsedData} width={400} height={200} />
+      <LineChart
+        data={parsedData}
+        color={'#177AD5'}
+        thickness={3}
+        dataPointsColor={'red'}
+        height={500}
+        adjustToWidth
+        isAnimated
+        showVerticalLines
+      />
     </View>
   );
 };
