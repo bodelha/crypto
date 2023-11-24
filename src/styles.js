@@ -37,7 +37,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         marginBottom: 8,
         width: '50%',
-        left: 25
+        left: 25,
     },
     cryptoSymbol: {
         fontSize: 18,
@@ -54,6 +54,14 @@ const styles = StyleSheet.create({
         height: 50,
         resizeMode: 'contain',
         marginTop: 'auto',
+    },
+    DropDownPicker: {
+        width: '30%',
+        maxHeight: 300,
+    },
+
+    DropDownPickerOpen: {
+        zIndex: 1000,
     },
 });
 
