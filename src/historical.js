@@ -15,16 +15,14 @@ const CryptoHistoricalDataPage = () => {
   const [closureData, setClosureData] = useState([]);
   const [volumeData, setVolumeData] = useState([]);
   const [interval, setInterval] = useState(180);
-  const [closureMin, setClosureMin] = useState(0); // Adicionado
-  const [closureMax, setClosureMax] = useState(0); // Adicionado
-  const [volumeMin, setVolumeMin] = useState(0);   // Adicionado
-  const [volumeMax, setVolumeMax] = useState(0);   // Adicionado
+  const [closureMin, setClosureMin] = useState(0);
+  const [volumeMin, setVolumeMin] = useState(0);
 
   const intervalOptions = [
-    { 'label': 'Semana', 'value': 7 },
-    { 'label': 'Mês', 'value': 30 },
-    { 'label': '3 Meses', 'value': 90 },
-    { 'label': '6 Meses', 'value': 180 }
+    { label: 'Semana', value: 7 },
+    { label: 'Mês', value: 30 },
+    { label: '3 Meses', value: 90 },
+    { label: '6 Meses', value: 180 }
   ];
 
   const handleIntervalChange = (newInterval) => {
@@ -40,16 +38,11 @@ const CryptoHistoricalDataPage = () => {
         const vData = await transformDataForLineChart(data || mockedData, 'v', interval);
         setVolumeData(vData);
 
-        const closureMaxValue = Math.max(...cData.map((entry) => entry.value));
         const closureMinValue = Math.min(...cData.map((entry) => entry.value));
-        const volumeMaxValue = Math.max(...vData.map((entry) => entry.value));
         const volumeMinValue = Math.min(...vData.map((entry) => entry.value));
 
-        // Define os valores no estado
         setClosureMin(closureMinValue);
-        setClosureMax(closureMaxValue);
         setVolumeMin(volumeMinValue);
-        setVolumeMax(volumeMaxValue);
       } catch (error) {
         console.error('Error fetching or transforming historical data:', error.message);
       }
@@ -63,6 +56,19 @@ const CryptoHistoricalDataPage = () => {
   } else if (!volumeData || volumeData.length === 0) {
     return <Text>Loading volumeData data...</Text>;
   }
+
+  const pointerConfig = {
+    pointerColor: 'lightblue',
+    showPointerStrip: true,
+    pointerStripColor: 'black',
+    pointerStripUptoDataPoint: true,
+    pointerLabelComponent: (point) => (
+      <View>
+        <Text style={{ fontSize: 12, fontWeight: 'bold' }}>'${point.dataPointText}'</Text>
+      </View>
+    ),  // Não está exibindo mas a ideia é boa
+    pointerLabelVisible: true,
+  };
 
   return (
     <View style={styles.mainContainer}>
@@ -89,7 +95,7 @@ const CryptoHistoricalDataPage = () => {
             color={'darkblue'}
             thickness={3}
             height={300}
-            yAxisOffset={closureMin}  // Usa os valores calculados para o gráfico de fechamento
+            yAxisOffset={closureMin}
             yAxisLabelPrefix={'$'}
             initialSpacing={5}
             hideDataPoints
@@ -98,6 +104,7 @@ const CryptoHistoricalDataPage = () => {
             adjustToWidth
             isAnimated
             showVerticalLines
+            pointerConfig={pointerConfig}
           />
 
           <Text style={styles.title}>{`${symbol} Negotiation Volumes`}</Text>
@@ -106,7 +113,7 @@ const CryptoHistoricalDataPage = () => {
             data={volumeData}
             color={'darkblue'}
             height={150}
-            yAxisOffset={volumeMin}  // Usa os valores calculados para o gráfico de volume
+            yAxisOffset={volumeMin}
             yAxisLabelPrefix={'$'}
             verticalLinesColor={'white'}
             backgroundColor={'lightgray'}
@@ -117,6 +124,7 @@ const CryptoHistoricalDataPage = () => {
             adjustToWidth
             isAnimated
             showVerticalLines
+            pointerConfig={pointerConfig}
           />
         </View>
       </View>
