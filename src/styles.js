@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Platform, StatusBar } from 'react-native';
 
 const styles = StyleSheet.create({
     container: {
@@ -55,13 +55,33 @@ const styles = StyleSheet.create({
         resizeMode: 'contain',
         marginTop: 'auto',
     },
+    dropdownContainer: {
+        position: 'absolute',
+        top: 16,
+        right: 16,
+        width: '40%',
+        marginRight: 15
+    },
     DropDownPicker: {
-        width: '30%',
+        width: '100%',
         maxHeight: 300,
     },
-
     DropDownPickerOpen: {
         zIndex: 1000,
+    },
+    histTitle: {
+        position: 'absolute',
+        top: 50,
+        left: 60,
+        fontSize: 20,
+        fontWeight: 'bold'
+    },
+    volTitle: {
+        position: 'absolute',
+        bottom: 250,
+        left: 60,
+        fontSize: 20,
+        fontWeight: 'bold'
     },
 });
 

@@ -4,10 +4,14 @@ import { LineChart } from 'react-native-gifted-charts';
 import mockedData from './sol';
 import { transformDataForLineChart, getHistoricalData } from './scripts';
 import DropDownPicker from 'react-native-dropdown-picker';
+import { useRoute } from '@react-navigation/native'; // Importe useRoute do '@react-navigation/native'
 
-import styles from './styles'; // Certifique-se de importar o arquivo de estilos corretamente
+import styles from './styles';
 
-const HistoricalChart = ({ days, symbol }) => {
+const CryptoHistoricalDataPage = () => {
+  const route = useRoute(); // Use useRoute para acessar as propriedades da rota
+  const { symbol } = route.params;
+
   const [closureData, setClosureData] = useState([]);
   const [volumeData, setVolumeData] = useState([]);
   const intervalOptions = [
@@ -23,9 +27,9 @@ const HistoricalChart = ({ days, symbol }) => {
     const fetchData = async () => {
       try {
         const data = await getHistoricalData(symbol);
-        const cData = await transformDataForLineChart(data || mockedData, 'c', days);
+        const cData = await transformDataForLineChart(data || mockedData, 'c', interval); // Use interval em vez de days
         setClosureData(cData);
-        const vData = await transformDataForLineChart(data || mockedData, 'v', days);
+        const vData = await transformDataForLineChart(data || mockedData, 'v', interval); // Use interval em vez de days
         setVolumeData(vData);
       } catch (error) {
         console.error('Error fetching or transforming historical data:', error.message);
@@ -33,7 +37,7 @@ const HistoricalChart = ({ days, symbol }) => {
     };
 
     fetchData();
-  }, [days]);
+  }, [symbol, interval]); // Adicione symbol e interval como dependências do useEffect
 
   if (!closureData || closureData.length === 0) {
     return <Text>Loading closure data...</Text>;
@@ -44,7 +48,6 @@ const HistoricalChart = ({ days, symbol }) => {
   return (
     <View style={styles.container}>
       <View style={styles.container}>
-        <Text style={styles.paragraph}>Cryptocurrency Historical Performance</Text>
 
         <TouchableWithoutFeedback onPress={() => setOpen(false)}>
           <View style={styles.dropdownContainer}>
@@ -55,11 +58,14 @@ const HistoricalChart = ({ days, symbol }) => {
               open={open}
               setOpen={setOpen}
               onOpen={() => setOpen(true)}
+              containerStyle={styles.DropDownPicker}
+              style={{ ...styles.DropDownPicker, ...styles.DropDownPickerOpen }}
             />
           </View>
         </TouchableWithoutFeedback>
 
         <View style={styles.chartContainer}>
+        <Text style={styles.histTitle}>{`${symbol} Closure Prices`}</Text>
           <LineChart
             data={closureData}
             color={'#177AD5'}
@@ -74,6 +80,7 @@ const HistoricalChart = ({ days, symbol }) => {
             showVerticalLines
           />
 
+        <Text style={styles.volTitle}>{`${symbol} Negotiation Volumes`}</Text>
           <LineChart
             areaChart
             data={volumeData}
@@ -92,4 +99,4 @@ const HistoricalChart = ({ days, symbol }) => {
   );
 };
 
-export default HistoricalChart;
+export default CryptoHistoricalDataPage;
