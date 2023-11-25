@@ -1,43 +1,62 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, TouchableWithoutFeedback } from 'react-native';
+import { View, Text, TouchableOpacity } from 'react-native';
 import { LineChart } from 'react-native-gifted-charts';
-import mockedData from './sol';
+import { useRoute, useNavigation } from '@react-navigation/native';
+import Icon from 'react-native-vector-icons/FontAwesome';
 import { transformDataForLineChart, getHistoricalData } from './scripts';
-import DropDownPicker from 'react-native-dropdown-picker';
-import { useRoute } from '@react-navigation/native'; // Importe useRoute do '@react-navigation/native'
-
+import mockedData from './sol';
 import styles from './styles';
 
 const CryptoHistoricalDataPage = () => {
-  const route = useRoute(); // Use useRoute para acessar as propriedades da rota
+  const route = useRoute();
   const { symbol } = route.params;
+  const navigation = useNavigation();
 
   const [closureData, setClosureData] = useState([]);
   const [volumeData, setVolumeData] = useState([]);
+  const [interval, setInterval] = useState(180);
+  const [closureMin, setClosureMin] = useState(0); // Adicionado
+  const [closureMax, setClosureMax] = useState(0); // Adicionado
+  const [volumeMin, setVolumeMin] = useState(0);   // Adicionado
+  const [volumeMax, setVolumeMax] = useState(0);   // Adicionado
+
   const intervalOptions = [
-    { 'label': 'semana', 'value': 7 },
+    { 'label': 'Semana', 'value': 7 },
     { 'label': 'Mês', 'value': 30 },
     { 'label': '3 Meses', 'value': 90 },
     { 'label': '6 Meses', 'value': 180 }
   ];
-  const [interval, setInterval] = useState(180);
-  const [open, setOpen] = useState(false);
+
+  const handleIntervalChange = (newInterval) => {
+    setInterval(newInterval);
+  };
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const data = await getHistoricalData(symbol);
-        const cData = await transformDataForLineChart(data || mockedData, 'c', interval); // Use interval em vez de days
+        const cData = await transformDataForLineChart(data || mockedData, 'c', interval);
         setClosureData(cData);
-        const vData = await transformDataForLineChart(data || mockedData, 'v', interval); // Use interval em vez de days
+        const vData = await transformDataForLineChart(data || mockedData, 'v', interval);
         setVolumeData(vData);
+
+        const closureMaxValue = Math.max(...cData.map((entry) => entry.value));
+        const closureMinValue = Math.min(...cData.map((entry) => entry.value));
+        const volumeMaxValue = Math.max(...vData.map((entry) => entry.value));
+        const volumeMinValue = Math.min(...vData.map((entry) => entry.value));
+
+        // Define os valores no estado
+        setClosureMin(closureMinValue);
+        setClosureMax(closureMaxValue);
+        setVolumeMin(volumeMinValue);
+        setVolumeMax(volumeMaxValue);
       } catch (error) {
         console.error('Error fetching or transforming historical data:', error.message);
       }
     };
 
     fetchData();
-  }, [symbol, interval]); // Adicione symbol e interval como dependências do useEffect
+  }, [symbol, interval]);
 
   if (!closureData || closureData.length === 0) {
     return <Text>Loading closure data...</Text>;
@@ -46,26 +65,25 @@ const CryptoHistoricalDataPage = () => {
   }
 
   return (
-    <View style={styles.container}>
+    <View style={styles.mainContainer}>
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity onPress={() => navigation.navigate('Home')}>
+          <Icon name="arrow-left" size={24} color="black" />
+        </TouchableOpacity>
+        {intervalOptions.map((option) => (
+          <TouchableOpacity
+            key={option.value}
+            style={styles.intervalButton}
+            onPress={() => handleIntervalChange(option.value)}
+          >
+            <Text style={styles.buttonText}>{option.label}</Text>
+          </TouchableOpacity>
+        ))}
+      </View>
+
       <View style={styles.container}>
-
-        <TouchableWithoutFeedback onPress={() => setOpen(false)}>
-          <View style={styles.dropdownContainer}>
-            <DropDownPicker
-              placeholder={'Intervalo'}
-              items={intervalOptions}
-              value={'value'}
-              open={open}
-              setOpen={setOpen}
-              onOpen={() => setOpen(true)}
-              containerStyle={styles.DropDownPicker}
-              style={{ ...styles.DropDownPicker, ...styles.DropDownPickerOpen }}
-            />
-          </View>
-        </TouchableWithoutFeedback>
-
         <View style={styles.chartContainer}>
-        <Text style={styles.histTitle}>{`${symbol} Closure Prices`}</Text>
+          <Text style={styles.histTitle}>{`${symbol} Closure Prices`}</Text>
           <LineChart
             data={closureData}
             color={'#177AD5'}
@@ -78,9 +96,11 @@ const CryptoHistoricalDataPage = () => {
             adjustToWidth
             isAnimated
             showVerticalLines
+            yAxisOffset={closureMin*0.85}  // Usa os valores calculados para o gráfico de fechamento
+            maxValue={closureMax*1.15}
           />
 
-        <Text style={styles.volTitle}>{`${symbol} Negotiation Volumes`}</Text>
+          <Text style={styles.volTitle}>{`${symbol} Negotiation Volumes`}</Text>
           <LineChart
             areaChart
             data={volumeData}
@@ -92,6 +112,8 @@ const CryptoHistoricalDataPage = () => {
             adjustToWidth
             isAnimated
             showVerticalLines
+            yAxisOffset={volumeMin*0.85}  // Usa os valores calculados para o gráfico de volume
+            maxValue={volumeMax*1.15}
           />
         </View>
       </View>
