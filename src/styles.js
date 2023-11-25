@@ -71,24 +71,21 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   intervalButton: {
-    backgroundColor: '#177AD5',
-    paddingVertical: 8,
-    paddingHorizontal: 16,
+    borderWidth: 1,
+    borderColor: '#ccc',
     borderRadius: 8,
+    padding: 16,
+    marginBottom: 16,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
   },
   buttonText: {
-    color: 'white',
+    color: 'darkgray',
     fontSize: 16,
   },
-  histTitle: {
-    marginTop: -30,
-    marginLeft: 70,
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-  volTitle: {
-    marginBottom: -5,
-    marginLeft: 70,
+  title: {
+    alignSelf: 'center',
     fontSize: 20,
     fontWeight: 'bold',
   },

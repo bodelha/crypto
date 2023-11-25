@@ -4,7 +4,7 @@ import { LineChart } from 'react-native-gifted-charts';
 import { useRoute, useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { transformDataForLineChart, getHistoricalData } from './scripts';
-import mockedData from './sol';
+import mockedData from './ada';
 import styles from './styles';
 
 const CryptoHistoricalDataPage = () => {
@@ -83,37 +83,40 @@ const CryptoHistoricalDataPage = () => {
 
       <View style={styles.container}>
         <View style={styles.chartContainer}>
-          <Text style={styles.histTitle}>{`${symbol} Closure Prices`}</Text>
+          <Text style={styles.title}>{`${symbol} Closure Prices`}</Text>
           <LineChart
             data={closureData}
-            color={'#177AD5'}
+            color={'darkblue'}
             thickness={3}
-            height={450}
-            hideYAxisText
+            height={300}
+            yAxisOffset={closureMin}  // Usa os valores calculados para o gráfico de fechamento
+            yAxisLabelPrefix={'$'}
+            initialSpacing={5}
             hideDataPoints
             rotateLabel
             curved
             adjustToWidth
             isAnimated
             showVerticalLines
-            yAxisOffset={closureMin*0.85}  // Usa os valores calculados para o gráfico de fechamento
-            maxValue={closureMax*1.15}
           />
 
-          <Text style={styles.volTitle}>{`${symbol} Negotiation Volumes`}</Text>
+          <Text style={styles.title}>{`${symbol} Negotiation Volumes`}</Text>
           <LineChart
             areaChart
             data={volumeData}
-            color={'green'}
+            color={'darkblue'}
             height={150}
-            hideYAxisText
+            yAxisOffset={volumeMin}  // Usa os valores calculados para o gráfico de volume
+            yAxisLabelPrefix={'$'}
+            verticalLinesColor={'white'}
+            backgroundColor={'lightgray'}
+            initialSpacing={5}
+            startFillColor={'darkblue'}
             hideDataPoints
             rotateLabel
             adjustToWidth
             isAnimated
             showVerticalLines
-            yAxisOffset={volumeMin*0.85}  // Usa os valores calculados para o gráfico de volume
-            maxValue={volumeMax*1.15}
           />
         </View>
       </View>
